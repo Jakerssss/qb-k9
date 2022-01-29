@@ -1,7 +1,7 @@
 local QBCore = exports['qb-core']:GetCoreObject()
 ---- ** Locales ** ----
 local activate_k9 = false
-local k9_name = Lang:t("info.k9_name")
+local k9_name = "Jakey"
 local k9_id = false
 local searching = false
 local following = true
@@ -19,6 +19,55 @@ local searchhit = {
     anim = "indicate_high"
 }
 
+------Player Anim Shit------
+
+function loadAnimDict( dict )
+  while ( not HasAnimDictLoaded( dict ) ) do
+      RequestAnimDict( dict )
+      Citizen.Wait( 5 )
+  end
+end 
+
+function WhistleAnim()
+	loadAnimDict( "rcmnigel1c" )
+    TaskPlayAnim( PlayerPedId(), "rcmnigel1c", "hailing_whistle_waive_a", 1.0, 4.0, -1, 48, 0, 0, 0, 0 )
+end
+
+function Laydog()
+	loadAnimDict( "gestures@f@standing@casual" )
+    TaskPlayAnim( PlayerPedId(), "gestures@f@standing@casual", "gesture_hand_down", 1.0, 4.0, -1, 48, 0, 0, 0, 0 )
+end
+
+function Sitdog()
+	loadAnimDict( "swat" )
+    TaskPlayAnim( PlayerPedId(), "swat", "freeze", 1.0, 4.0, -1, 48, 0, 0, 0, 0 )
+end
+
+function Search()
+	loadAnimDict( "swat" )
+    TaskPlayAnim( PlayerPedId(), "swat", "you_fwd", 1.0, 4.0, -1, 48, 0, 0, 0, 0 )
+end
+
+function SearchArea()
+	loadAnimDict( "swat" )
+    TaskPlayAnim( PlayerPedId(), "swat", "rally_point", 1.0, 4.0, -1, 48, 0, 0, 0, 0 )
+end
+
+function Attackdog()
+	loadAnimDict( "swat" )
+    TaskPlayAnim( PlayerPedId(), "swat", "you_fwd", 1.0, 4.0, -1, 48, 0, 0, 0, 0 )
+end
+
+function Petdog()
+	loadAnimDict( "creatures@rottweiler@tricks@" )
+    TaskPlayAnim( PlayerPedId(), "creatures@rottweiler@tricks@", "petting_franklin", 1.0, 4.0, -1, 48, 0, 0, 0, 0 )
+end
+
+RegisterNetEvent('qb-k9:client:petdoggo', function() 
+  Petdog()
+  Citizen.Wait(2500)
+  TriggerServerEvent('hud:server:RelieveStress', 20)
+end)
 
 ---- ** Functions ** ----
 ---- ** Sit and Lay animations ** ----
@@ -35,11 +84,13 @@ end
 local function K9AttackorFollow(target)
   local DOG = NetworkGetEntityFromNetworkId(k9_id)
   if target then
+    Attackdog()
     SetCanAttackFriendly(DOG, true, true);
     TaskPutPedDirectlyIntoMelee(DOG, target, 0.0, -1.0, 0.0, false);
     following = false
     QBCore.Functions.Notify(k9_name.." is attacking!", "error", 2000)
   else
+    WhistleAnim()
     TaskFollowToOffsetOfEntity(DOG, PlayerPedId(), 0.5, -1.0, 0.0, 5.0, -1, 1.0, true);
     following = true
     QBCore.Functions.Notify(k9_name.." is following.", "primary", 2000)
@@ -94,14 +145,14 @@ local function K9Found(status, type)
   end
   Wait(time)
   if status then
-    QBCore.Functions.Notify(Lang:t("success.k9_alert"), "success", 4000)
+    QBCore.Functions.Notify("Dog Alerted!", "success", 4000)
     searching = false
     PlayAnimation(searchhit.dict, searchhit.anim)
     Wait(2500)
     PlayAnimation(sit.dict, sit.anim)
     following = false
   else
-    QBCore.Functions.Notify(Lang:t("error.k9_alert"), "error", 4000)
+    QBCore.Functions.Notify("Dog did not alert", "error", 4000)
     following = true
   end
 end
@@ -172,7 +223,7 @@ local function K9ToggleVehicle(target)
 
     end
   else
-    QBCore.Functions.Notify(k9_name..Lang:t("error.k9_toofar"), "error", 4000)
+    QBCore.Functions.Notify(k9_name.."Is too far away!", "error", 4000)
   end
 end
 
@@ -194,7 +245,7 @@ local function K9SearchPerson()
     if TARGET > 0 then
       TriggerServerEvent("K9:SERVER:SEARCH_PERSON", TARGET)
     else
-      QBCore.Functions.Notify(k9_name..Lang:t("error.k9_locaterror"), "error", 4500)
+      QBCore.Functions.Notify(k9_name.."Unable to locate people..", "error", 4500)
     end
     
 end
@@ -220,7 +271,7 @@ local function K9SearchVehicle()
   local DOG = NetworkGetEntityFromNetworkId(k9_id)
 
   if VEHICLE then
-    QBCore.Functions.Notify(k9_name..Lang:t("info.k9_searching"), "success", 4500)
+    QBCore.Functions.Notify(k9_name.."is searching..", "success", 4500)
 
     local PLAYERS = {}
     local MAX_SEATS = GetVehicleMaxNumberOfPassengers(VEHICLE) -2
@@ -269,7 +320,7 @@ local function K9SearchVehicle()
 
     searching = false
   else
-      QBCore.Functions.Notify(Lang:t("error.k9_vehlocate"), "error", 4000)
+      QBCore.Functions.Notify(k9_name.."Unable to locate vehicle..", "error", 4000)
   end
 end
 
@@ -297,7 +348,7 @@ local function K9SearchArea()
 
   for i = 1, #PLAYERS do
     following = false
-    QBCore.Functions.Notify(k9_name..Lang:t("info.k9_scent"), "primary", 4000)
+    QBCore.Functions.Notify(k9_name.."found a scent..", "primary", 4000)
     local DOG = NetworkGetEntityFromNetworkId(k9_id)
     local DOG_COORDS = GetEntityCoords(DOG)
     local COORDS = GetEntityCoords(PLAYERS[i])
@@ -312,10 +363,10 @@ local function K9SearchArea()
     end
 
     if following then
-      QBCore.Functions.Notify(k9_name..Lang:t("info.k9_nofollow"), "primary", 4000)
+      QBCore.Functions.Notify(k9_name.."is no longer tracking..", "primary", 4000)
       break
     end
-    QBCore.Functions.Notify(k9_name..Lang:t("info.k9_lostscent"), "primary", 4000)
+    QBCore.Functions.Notify(k9_name.."lost the scent..", "primary", 4000)
     K9AttackorFollow(false)
     Wait(2000)
   end
@@ -369,6 +420,23 @@ RegisterNetEvent('QBCore:Client:OnJobUpdate', function(JobInfo)
   end
 end)
 
+------petdogo-------
+local dog = {
+  1126154828,
+ 
+}
+exports['qb-target']:AddTargetModel(dog, {
+  options = {
+      {
+          type = "function",
+          event = "qb-k9:client:petdoggo",
+          icon = "fas fa-hand-holding-medical",
+          label = "Pet Dogo",
+      },
+  },
+  distance = 2.0
+})
+
 ---- ** Create Threads ** ----
 CreateThread(function()
   exports['qb-target']:AddBoxZone("1234", vector3(458.95, -1016.99, 28.17), 1.5, 1.6, {
@@ -380,11 +448,10 @@ CreateThread(function()
   }, {
     options = { 
       {
-        type = "client",
+        type = "function",
         event = "qb-k9:client:menu", 
         icon = 'fa-solid fa-dog', 
-        label = Lang:t("info.k9_lostscent"), 
-        job = Config.Autorhized, 
+        label = "lost the scent..", 
       }
     },
     distance = 2.5,
@@ -396,19 +463,19 @@ end)
 RegisterNetEvent('qb-k9:client:menu', function()
   local K9Purchase = {
     {
-        header = Lang:t("menu.purchase_header"),
+        header = "🐺 | Police K9 Menu",
         isMenuHeader = true
     },
     {
-      header = Lang:t("menu.k9_takeout"),
-      txt = Lang:t("menu.takeout_txt"),
+      header = "🐾 | Take out K9",
+      txt = "Here you can take out one of departments avaible dogs",
       params = {
         event = 'qb-k9:client:PurchaseDog',
       }
     },
     {
-      header = Lang:t("menu.k9_return"),
-      txt = Lang:t("menu.return_txt"),
+      header = "🦴 | Return K9",
+      txt = "Here you can return one of the departments K9 Dogs",
       params = {
         event = 'qb-k9:client:ReturnDoggo',
       }
@@ -421,9 +488,9 @@ end)
 RegisterNetEvent('qb-k9:client:ReturnDoggo', function() 
   if k9_id then
     DespawnK9()
-    QBCore.Functions.Notify(Lang:t("info.k9_return"), "success", 4500)
+    QBCore.Functions.Notify("You returned the K9 Unit!", "success", 4500)
   else
-    QBCore.Functions.Notify(Lang:t("error.k9_returnerror"), "error", 4500)
+    QBCore.Functions.Notify("Cant return the K9 Unit!", "error", 4500)
   end
 end)
 
@@ -457,6 +524,7 @@ end)
 
 --- SPAWN EVENT
 RegisterNetEvent('K9:CLIENT:SPAWN_K9', function(DawgHash, colour, vest)
+  
   local pos = GetEntityCoords(PlayerPedId())
   local heading = GetEntityHeading(PlayerPedId())
   RequestModel(DawgHash);
@@ -512,55 +580,55 @@ RegisterCommand("caninecommanders", function()
   if activate_k9 then
     local k9Commands = {
       {
-          header = Lang:t("menu.k9_commands"),
+          header = "Police K9 Commands",
           isMenuHeader = true
       },
       {
-        header = Lang:t("menu.k9_sit"),
-        txt = Lang:t("menu.k9_sittxt"),
+        header = "🔈| K9 Sit",
+        txt = "Make your K9 Dog Sit",
         params = {
           event = 'qb-k9:client:Commands',
           args = "sit"
         }
       },
       {
-        header = Lang:t("menu.k9_lay"),
-        txt = Lang:t("menu.k9_laytxt"),
+        header = "🔈| K9 Lay Down",
+        txt = "Make your K9 Dog Lay Down",
         params = {
           event = 'qb-k9:client:Commands',
           args = "laydown"
         }
       },
       {
-        header = Lang:t("menu.k9_carsearch"),
-        txt = Lang:t("menu.k9_carsearchtxt"),
+        header = "🔍🚘 | K9 Search Car",
+        txt = "Make your K9 search nearby car",
         params = {
           event = 'qb-k9:client:Commands',
           args = "searchcar"
         }
       },
       {
-        header = Lang:t("menu.k9_enterveh"),
-        txt = Lang:t("menu.k9_entervehtxt"),
-        params = {
-          event = 'qb-k9:client:Commands',
-          args = "entercar"
-        }
-      },
-      {
-        header = Lang:t("menu.k9_searchp"),
-        txt = Lang:t("menu.k9_searchptxt"),
+        header = "🔍🕵 | K9 Search Person",
+        txt = "Make your K9 search nearby person",
         params = {
           event = 'qb-k9:client:Commands',
           args = "searchdude"
         }
       },
       {
-        header = Lang:t("menu.k9_area"),
-        txt = Lang:t("menu.k9_areatxt"),
+        header = "🔍🌍 | K9 Search Area",
+        txt = "Make your K9 search area",
         params = {
           event = 'qb-k9:client:Commands',
           args = "searcharea"
+        }
+      },
+      {
+        header = "🚘 | Put K9 in vehicle",
+        txt = "Tell your K9 to enter vehicle",
+        params = {
+          event = 'qb-k9:client:Commands',
+          args = "entercar"
         }
       },
     }
@@ -598,16 +666,22 @@ end, false)
 
 RegisterNetEvent('qb-k9:client:Commands', function(data)
   if data == "sit" then
+    Sitdog()
     PlayAnimation(sit.dict, sit.anim)
-  elseif data == "laydown" then 
+  elseif data == "laydown" then
+    Laydog() 
     PlayAnimation(laydown.dict, laydown.anim)
   elseif data == "searchcar" then 
+    Search()
     K9SearchVehicle()
   elseif data == "entercar" then 
+    Search()
     K9ToggleVehicle(false)
-  elseif data == "searchdude" then 
+  elseif data == "searchdude" then
+    Search() 
     K9SearchPerson()
-  elseif data == "searcharea" then 
+  elseif data == "searcharea" then
+    SearchArea() 
     K9SearchArea()
   end
 end)
