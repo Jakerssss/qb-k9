@@ -2,7 +2,7 @@
 
 Massive thank you to these Legends ^
 
-*** This is for the old core***
+# This is for the old core#
 
 # Jakers Edits
 Reverted to old core
