@@ -1,5 +1,16 @@
 local QBCore = exports['qb-core']:GetCoreObject()
 
+
+QBCore.Functions.CreateUseableItem("k9", function(source, item)
+    local src = source
+	local Player = QBCore.Functions.GetPlayer(src)
+	if Player.PlayerData.job.name == "police" then
+    TriggerClientEvent('qb-k9:client:PurchaseDog',source)
+else
+	TriggerClientEvent('QBCore:Notify', src,  "For Police Officer Only", "error")
+end
+end)
+
 RegisterServerEvent("K9:SERVER:SPAWN_K9", function(model, colour, vest)
     local PLAYER = QBCore.Functions.GetPlayer(source).PlayerData
 
