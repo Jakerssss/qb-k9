@@ -30,7 +30,7 @@ You can use any K9 Ped Just make sure to change it to suit the script or use thi
 
 # You must add this to QB Core Shared.lua for item to work or just use the target location.
 
-['k9'] 				 	 = {['name'] = 'k9', 			  	  		['label'] = 'Police K9', 				['weight'] = 1000, 		['type'] = 'item', 		['image'] = 'k9.png', 			['unique'] = false, 	['useable'] = true, 	['shouldClose'] = true,	   ['combinable'] = nil,   ['description'] = 'Call For Back Up Buddy'},
+```['k9'] 				 	 = {['name'] = 'k9', 			  	  		['label'] = 'Police K9', 				['weight'] = 1000, 		['type'] = 'item', 		['image'] = 'k9.png', 			['unique'] = false, 	['useable'] = true, 	['shouldClose'] = true,	   ['combinable'] = nil,   ['description'] = 'Call For Back Up Buddy'},```
 
 
 #Add the item images [qb]\[?]-inventory\html\images
