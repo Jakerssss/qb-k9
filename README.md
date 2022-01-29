@@ -1,7 +1,21 @@
-# Police K9 Scripts originally forked from hashisx https://github.com/hashisx/hashx_k9
+# Police K9 Scripts originally forked from hashisx https://github.com/hashisx/hashx_k9... then forked from https://github.com/FjamZoo/qb-k9
+
+Massive thank you to these Legends ^
+
+*** This is for the old core***
+
+# Jakers Edits
+Reverted to old core
+Added Animations to Commands
+Added Usable item like np for you werido's
+Added pet Feature with healing.
+
+
 
 # Use
-Purchase a dog from the location specified in the Config, use Z to follow or attack (Must be pointing a weapon to attack).
+Purchase a dog From the pillar in the middle of the outside garages in mrpd parking lot
+
+, use Z to follow or attack (Must be pointing a weapon to attack).
 
 Press K to show K9 Commands (Both of these are now keymaps so its a on user basis)
 
@@ -11,7 +25,15 @@ Press K to show K9 Commands (Both of these are now keymaps so its a on user basi
  Sometimes the Search Person will pick up the dog. Best to have the dog behind you.
 
 # K9 Ped
-The k9 ped I use personally from this script is from here https://forum.cfx.re/t/how-to-german-shepherd-malinois-k9-dog-1-0-1/1065040
+You can use any K9 Ped Just make sure to change it to suit the script or use this >  https://forum.cfx.re/t/how-to-german-shepherd-malinois-k9-dog-1-0-1/1065040
+
+# You must add this to QB Core Shared.lua for item to work or just use the target location.
+
+['k9'] 				 	 = {['name'] = 'k9', 			  	  		['label'] = 'Police K9', 				['weight'] = 1000, 		['type'] = 'item', 		['image'] = 'k9.png', 			['unique'] = false, 	['useable'] = true, 	['shouldClose'] = true,	   ['combinable'] = nil,   ['description'] = 'Call For Back Up Buddy'},
+
+
+#Add the item images [qb]\[?]-inventory\html\images
+
 
 # You must add this to QB Inventory Server main.lua.
 ```
