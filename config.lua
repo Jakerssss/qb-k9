@@ -10,7 +10,7 @@ Config.DogModelProps = {
 	},
 }
 
-Config.Autorhized = {["police"] = 4, ["parkranger"] = 2, ["bcso"] = 4} -- This is setup as [JOB] = [GRADE]
+Config.Autorhized = {["police"] = 4,3,2, ["parkranger"] = 4,3,2, ["bcso"] = 4,3,2} -- This is setup as [JOB] = [GRADE]
 
 Config.K9Search = {
 	"joint",
