@@ -2,7 +2,8 @@
 
 Massive thank you to these Legends ^
 
-# This is for the old core#
+# This is for the old core
+If your on the new core just use FjamZoo version
 
 # Jakers Edits
 Reverted to old core
